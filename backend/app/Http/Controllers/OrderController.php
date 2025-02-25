@@ -2,167 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\CheckoutAction;
+use App\Exceptions\CartNotFoundException;
 use App\Http\Requests\StoreOrderRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Rules\Phone;
+use App\Services\OrderService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Stripe\Checkout\Session as StripeSession;
-use Stripe\Stripe;
 
 class OrderController extends Controller
 {
 
   private $cart;
-  private $order;
 
   public function index(Request $request)
   {
-    $checkoutSessionId = $request->query('checkout_session_id', null);
+    $checkoutSessionId = $request->query('checkout_session_id');
+    $order = null;
 
     if ($checkoutSessionId) {
-      $this->order = $this->getOrderByCheckoutId($checkoutSessionId);
+      $order = Order::getOrderByCheckoutId($checkoutSessionId);
     }
 
-    if ($this->order) {
-      $this->acceptThisOrder();
+    if ($order) {
+      $order->accept();
     }
 
-    return $this->getFormattedOrders();
-  }
+    $orders = auth()->user()->orders->where('status', '!=', 'unfinished');
 
-  private function getOrderByCheckoutId($checkoutId)
-  {
-    return Order::where('checkout_session_id', $checkoutId)->firstWhere('status', 'unfinished');
-  }
-
-  private function acceptThisOrder()
-  {
-    $this->order->status = "food processing";
-    $this->order->save();
-  }
-
-  private function getFormattedOrders()
-  {
-    return Auth::user()->orders
-      ->where('status', '!=', 'unfinished')
-      ->map(fn($order) => $this->formatOrderForResponse($order));
-  }
-
-  private function formatOrderForResponse($order)
-  {
-    return [
-      'id' => $order->id,
-      'description' => $order->dishes->map(fn($dish) => "{$dish->name} x {$dish->pivot->quantity}")->implode(', '),
-      'montant' => $order->montant,
-      'numberOfItems' => $order->numberOfItems,
-      'status' => $order->status
-    ];
+    return OrderResource::collection($orders);
   }
 
   public function store(StoreOrderRequest $request)
   {
-    $session = $this->checkout();
+    $this->cart = auth()->user()?->cart;
 
-    $this->cart = Auth::user()?->cart;
+    try {
+      $orderData = [...$request->validated(), ...$this->getOrderExtraData()];
+      $order = (new OrderService($this->cart))->makeOrder($orderData)->getOrder();
 
-    if (!$this->cart) {
-      return response()->json(['error' => 'Cart is empty'], 404);
+      $session = (new CheckoutAction($order))->handle();
+
+      $order->update(["checkout_session_id" => $session->id]);
+
+      return response()->json([
+        'status' => 'Order created successfully',
+        'url' => $session->url
+      ], 200);
+    } catch (CartNotFoundException $e) {
+      return response()->json(['error' => $e->getMessage()], $e->getCode());
     }
-
-    $this->order = Order::create([
-      ...$request->all(),
-      ...$this->getOrderExtraData(),
-      ...["checkout_session_id" => $session->id]
-    ]);
-
-    $this->transfertCartToOrder();
-
-    return response()->json([
-      'status' => 'Order created successfully',
-      'url' => $session->url
-    ], 200);
   }
 
   private function getOrderExtraData()
   {
     return [
-      'user_id' => Auth::id(),
-      'montant' => $this->getOrderMontant(),
-      'numberOfItems' => $this->cart->first()->dishes->count(),
+      'user_id' => auth()->user()->id,
+      'montant' => $this->cart->total_montant,
+      'numberOfItems' => $this->cart->number_of_items,
       'status' => 'unfinished',
-    ];
-  }
-
-  private function getOrderMontant()
-  {
-    $SHIPPING_COST = 39;
-    return $this->cart->dishes
-      ->sum(fn($dish) => $dish->pivot->total) + $SHIPPING_COST;
-  }
-
-  private function transfertCartToOrder()
-  {
-    $this->cart->dishes->each(function ($dish) {
-      $this->order->dishes()->attach($dish->id, [
-        'quantity' => $dish->pivot->quantity,
-        'total' => $dish->pivot->total
-      ]);
-    });
-
-    $this->cart->delete();
-  }
-
-  public function checkout()
-  {
-    $this->cart = Auth::user()->cart;
-
-    Stripe::setApiKey(config('stripe.sk'));
-
-    $session = $this->getCheckoutSession();
-
-    return $session;
-  }
-
-  private function getCheckoutSession()
-  {
-    return StripeSession::create([
-      'mode' => 'payment',
-      'line_items' => $this->getCartItemsForCheckout(),
-      'success_url' => $this->getSuccessUrl(),
-      'cancel_url' => $this->getCancelUrl(),
-    ]);
-  }
-
-  private function getSuccessUrl()
-  {
-    return env('FRONTEND_URL') . '/orders?checkout_session_id={CHECKOUT_SESSION_ID}';
-  }
-
-  private function getCancelUrl()
-  {
-    return env('FRONTEND_URL') . '/';
-  }
-
-  private function getCartItemsForCheckout()
-  {
-    return $this->cart->dishes->map(function ($item) {
-      return $this->getCartItemForCheckout($item);
-    })->toArray();
-  }
-
-  private function getCartItemForCheckout($item)
-  {
-    return [
-      'price_data' => [
-        'currency' => 'usd',
-        'product_data' => [
-          'name' => $item->name,
-        ],
-        'unit_amount' => $item->price * 100,
-      ],
-      'quantity' => $item->pivot->quantity,
     ];
   }
 }
