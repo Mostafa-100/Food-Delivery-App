@@ -67,8 +67,7 @@ Before you begin, ensure you have the following installed:
 
 4. **Set Up Environment Variables**
 
-   - Create a `.env` file in the `backend` directory based on the `.env.example` file.
-   - Update the database credentials, Stripe API secret key (STRIPE_SK) and FRONTEND_URL in the `.env` file.
+   - Create a `.env` file in the `backend` and `frontend` directory based on the `.env.example` file.
 
    ```bash
    cp .env.example .env
