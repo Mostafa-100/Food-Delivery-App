@@ -1,6 +1,6 @@
 # Food Delivery App
 
-Welcome to the **Food Delivery App**, a full-stack project designed to showcase my skills in building modern web applications. This app is a part of my portfolio and demonstrates my ability to work with both frontend and backend technologies. The app allows users to browse restaurants, place food orders, and make payments using Stripe.
+**Food Delivery App**, a full-stack project designed to showcase my skills in building modern web applications. This app is a part of my portfolio and demonstrates my ability to work with both frontend and backend technologies. The app allows users to browse restaurants, place food orders, and make payments using Stripe.
 
 ## Technologies Used
 
@@ -68,7 +68,7 @@ Before you begin, ensure you have the following installed:
 4. **Set Up Environment Variables**
 
    - Create a `.env` file in the `backend` directory based on the `.env.example` file.
-   - Update the database credentials and Stripe API keys in the `.env` file.
+   - Update the database credentials, Stripe API secret key (STRIPE_SK) and FRONTEND_URL in the `.env` file.
 
    ```bash
    cp .env.example .env
