@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Exceptions\CartNotFoundException;
 use App\Models\Order;
 
 class OrderService
@@ -18,10 +17,6 @@ class OrderService
 
   public function makeOrder($data)
   {
-    if (!$this->cart) {
-      throw new CartNotFoundException;
-    }
-
     $this->order = Order::create($data);
 
     $this->cart->transfertToOrder($this->order);

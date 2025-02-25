@@ -46,7 +46,7 @@ class CartController extends Controller
     $dish = $cart->dishes()->firstWhere('dish_id', $dishId);
 
     if (!$dish) {
-      return response()->json(['message' => 'Dish not found in cart'], 404);
+      return response()->json(['error' => 'Dish not found in cart'], 404);
     }
 
     $cart->dishes()->updateExistingPivot($dishId, [
@@ -63,7 +63,7 @@ class CartController extends Controller
 
     if ($cartItems->isEmpty()) {
       return response()->json([
-        'message' => 'Cart is empty'
+        'error' => 'Cart is empty'
       ], 404);
     }
 
@@ -76,7 +76,7 @@ class CartController extends Controller
 
     if (!$cart) {
       return response()->json([
-        'message' => 'Cart not found'
+        'error' => 'Cart not found'
       ], 404);
     }
 

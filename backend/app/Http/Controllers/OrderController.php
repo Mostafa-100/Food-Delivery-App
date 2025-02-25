@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CheckoutAction;
-use App\Exceptions\CartNotFoundException;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
@@ -37,21 +36,22 @@ class OrderController extends Controller
   {
     $this->cart = auth()->user()?->cart;
 
-    try {
-      $orderData = [...$request->validated(), ...$this->getOrderExtraData()];
-      $order = (new OrderService($this->cart))->makeOrder($orderData)->getOrder();
-
-      $session = (new CheckoutAction($order))->handle();
-
-      $order->update(["checkout_session_id" => $session->id]);
-
-      return response()->json([
-        'status' => 'Order created successfully',
-        'url' => $session->url
-      ], 200);
-    } catch (CartNotFoundException $e) {
-      return response()->json(['error' => $e->getMessage()], $e->getCode());
+    if (!$this->cart) {
+      return response()->json(['error' => 'Cart not found'], 404);
     }
+
+    $orderData = [...$request->validated(), ...$this->getOrderExtraData()];
+
+    $order = (new OrderService($this->cart))->makeOrder($orderData)->getOrder();
+
+    $session = (new CheckoutAction($order))->handle();
+
+    $order->update(['checkout_session_id' => $session->id]);
+
+    return response()->json([
+      'status' => 'Order created successfully',
+      'url' => $session->url
+    ], 200);
   }
 
   private function getOrderExtraData()
