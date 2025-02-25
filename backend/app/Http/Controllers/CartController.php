@@ -62,9 +62,7 @@ class CartController extends Controller
     $cartItems = $request->user()?->cart?->dishes;
 
     if ($cartItems->isEmpty()) {
-      return response()->json([
-        'error' => 'Cart is empty'
-      ], 404);
+      return response()->json(['error' => 'Cart is empty'], 404);
     }
 
     return CartResource::collection($cartItems);
@@ -75,9 +73,7 @@ class CartController extends Controller
     $cart = $request->user()?->cart;
 
     if (!$cart) {
-      return response()->json([
-        'error' => 'Cart not found'
-      ], 404);
+      return response()->json(['error' => 'Cart not found'], 404);
     }
 
     $cart->dishes()->detach($id);
