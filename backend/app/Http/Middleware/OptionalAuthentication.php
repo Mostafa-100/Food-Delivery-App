@@ -12,8 +12,7 @@ class OptionalAuthentication
   {
     if ($request->bearerToken()) {
       $user = auth('sanctum')->user();
-      if (!$user) return response()->json(['error' => 'Invalid user'], 403);
-      auth()->setUser($user);
+      if ($user) auth()->setUser($user);
     }
     return $next($request);
   }
