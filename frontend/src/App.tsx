@@ -16,19 +16,13 @@ function App() {
       <Routes>
         <Route element={<UserPagesContainer />}>
           <Route path="/" element={<Home />} />
-          <Route path="/menu" element={<Page404 />} />
-          <Route path="/mobile-app" element={<Page404 />} />
-          <Route path="/contact-us" element={<Page404 />} />
-          <Route path="/delivery" element={<Page404 />} />
-          <Route path="/privacy-policy" element={<Page404 />} />
-          <Route path="/about-us" element={<Page404 />} />
-
           <Route element={<ProtectedRoutes />}>
             <Route path="/orders" element={<Orders />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/order" element={<Order />} />
           </Route>
         </Route>
+        <Route path="*" element={<Page404 />} />
       </Routes>
     </Router>
   );
