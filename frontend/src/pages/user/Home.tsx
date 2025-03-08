@@ -1,8 +1,8 @@
 import HeroSection from "../../components/HeroSection";
 import MenuSection from "../../components/menuSection/MenuSection";
-import Cta from "../../components/Cta";
 import Footer from "../../components/Footer";
 import TopDishesSection from "../../components/topDishesSection/TopDishesSection";
+import Cta from "../../components/cta/Cta";
 
 function Home() {
   return (
