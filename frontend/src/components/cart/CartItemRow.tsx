@@ -1,4 +1,11 @@
-function CartItemRow({ item, func }) {
+import { CartItemProps } from "../../libs/types.ts";
+
+type CartItemRowProps = {
+  item: CartItemProps,
+  func: CallableFunction,
+}
+
+function CartItemRow({ item, func }: CartItemRowProps) {
   return (
     <tr className="border-t border-slate-300 text-center" key={item.id}>
       <td className="p-2 flex justify-center">

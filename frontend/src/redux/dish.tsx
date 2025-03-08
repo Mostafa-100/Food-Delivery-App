@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DishProps } from "../libs/types";
+import { DishProps } from "../libs/types.ts";
 
 type DishState = {
   showItemCounter: boolean;

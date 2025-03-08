@@ -8,6 +8,7 @@ import AuthForm from "../../components/auth/AuthForm.tsx";
 
 import { setIsLoggedIn, setIsPageLoading } from "../../redux/auth";
 import useGetUser from "../../hooks/useGetUser.ts";
+import { useEffect } from "react";
 
 function UserPagesContainer() {
   const { showLogin, showSignup } = useSelector(
@@ -18,14 +19,16 @@ function UserPagesContainer() {
 
   const getUserResponse = useGetUser();
 
-  if (getUserResponse.isSuccess) {
-    dispatch(setIsLoggedIn(true));
-    dispatch(setIsPageLoading(false));
-  }
+  useEffect(() => {
+    if (getUserResponse.isSuccess) {
+      dispatch(setIsLoggedIn(true));
+      dispatch(setIsPageLoading(false));
+    }
 
-  if (getUserResponse.isError) {
-    dispatch(setIsPageLoading(false));
-  }
+    if (getUserResponse.isError) {
+      dispatch(setIsPageLoading(false));
+    }
+  }, [getUserResponse.isFetched])
 
   return (
     <>

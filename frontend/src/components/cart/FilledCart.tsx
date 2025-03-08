@@ -1,85 +1,44 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { RootState } from "../../redux/store";
 import { decrementNumOfItems } from "../../redux/cart";
 
-import { useMutation, useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 
 import CartItemRow from "./CartItemRow";
 import CartInfo from "./CartInfo";
 import PromoCodeInput from "./PromoCodeInput";
-import apiClient from "../../api/apiClient";
-
-type CartItemProps = {
-  id: number;
-  imagePath: string;
-  name: string;
-  numberOfStars: number;
-  snippet: string;
-  price: number;
-  quantity: number;
-  total: number;
-};
+import useGetCartItems from "../../hooks/useGetCartItems";
+import useRemoveCartItem from "../../hooks/useRemoveCartItem";
+import { CartItemProps } from "../../libs/types.ts";
+import { calcCartTotal } from "../../libs/utils";
 
 function FilledCart() {
+
+  const cartItems = useGetCartItems();
+
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const queryClient = useQueryClient();
 
-  const [cartItems, setCartItems] = useState([]);
+  const mutation = useRemoveCartItem();
 
-  useQuery(
-    ["cart-items", isLoggedIn],
-    async function () {
-      const response = await apiClient.get("/api/cart-items", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem('token')
-        }
-      });
-      return response.data;
-    },
-    {
-      onSuccess: (data) => {
-        setCartItems(data)
-      },
-      onError: (error) => console.error(error),
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      dispatch(decrementNumOfItems());
+      queryClient.invalidateQueries("cart-items");
     }
-  );
 
-  const mutation = useMutation(
-    async (cartItemId: number) => {
-      const response = await apiClient.delete(
-        `/api/remove-cart-item/${cartItemId}`
-        , {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem('token')
-          }
-        });
-      return response.data;
-    },
-    {
-      onSuccess: (data) => {
-        dispatch(decrementNumOfItems());
-        setCartItems(data);
-      },
-      onError: (error) => console.log(error),
+    if (mutation.isError) {
+      console.log(mutation.error);
     }
-  );
+  }, [mutation.isSuccess, mutation.isError]);
+
 
   async function removeCartItem(id: number) {
     mutation.mutate(id);
   }
 
-  const calculateTotal = useMemo(() => {
-    const SHIPPING_COST = 39;
-    return (
-      cartItems?.reduce(
-        (acc: number, curr: CartItemProps) => curr.total + acc,
-        0
-      ) + SHIPPING_COST
-    );
-  }, [cartItems]);
+  const calculateTotal = useMemo(() => calcCartTotal(cartItems), [cartItems]);
 
   return (
     <>

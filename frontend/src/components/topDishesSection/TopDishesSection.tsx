@@ -4,7 +4,7 @@ import Dish from "./Dish";
 import apiClient from "../../api/apiClient";
 import { useQuery } from "react-query";
 
-import { DishProps } from "../../libs/types";
+import { DishProps } from "../../libs/types.ts";
 import { setDishes, setInitialDishes } from "../../redux/dish";
 
 function TopDishesSection() {

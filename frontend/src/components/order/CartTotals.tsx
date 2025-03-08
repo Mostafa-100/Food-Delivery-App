@@ -1,5 +1,5 @@
 import PayButton from "./PayButton";
-import { PayButtonProps } from "../../libs/types";
+import { PayButtonProps } from "../../libs/types.ts";
 
 type CartTotalsProps = PayButtonProps & { total: number };
 

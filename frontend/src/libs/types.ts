@@ -14,3 +14,14 @@ export type DishProps = {
   quantity?: number;
   category_id: number;
 };
+
+export type CartItemProps = {
+  id: number;
+  imagePath: string;
+  name: string;
+  numberOfStars: number;
+  snippet: string;
+  price: number;
+  quantity: number;
+  total: number;
+};

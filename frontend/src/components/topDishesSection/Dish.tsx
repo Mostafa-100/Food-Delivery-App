@@ -9,7 +9,7 @@ import Stars from "./Stars";
 import DishCounter from "./DishCounter";
 import AddToCartButton from "./AddToCartButton";
 
-import { DishProps } from "../../libs/types";
+import { DishProps } from "../../libs/types.ts";
 
 function Dish(props: DishProps) {
   const [showItemCounter, setShowItemCounter] = useState(false);
