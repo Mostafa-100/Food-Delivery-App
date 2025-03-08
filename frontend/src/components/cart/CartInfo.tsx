@@ -1,26 +1,17 @@
-import { Link } from "react-router-dom";
+import PayButton from "./PayButton";
+import CartTotalCard from "./CartTotalCard";
+import DeliveryFeeCard from "./DeliveryFeeCard";
+import CartInfoHeader from "./CartInfoHeader";
 
-function CartInfo({ total }) {
+function CartInfo({ total }: { total: string }) {
   return (
     <div>
-      <div className="font-bold text-xl">Cart Totals</div>
+      <CartInfoHeader />
       <hr />
-      <div className="flex justify-between py-2">
-        <span className="text-neutral-500">Delivery Fee</span>
-        <span className="text-neutral-500">$39</span>
-      </div>
+      <DeliveryFeeCard />
       <hr />
-      <div className="flex justify-between py-2">
-        <span className="text-neutral-500 font-semibold">Total</span>
-        <span className="text-neutral-500">${total}</span>
-      </div>
-      <Link
-        to="/order"
-        state={{ total: total }}
-        className="bg-orange-600 hover:bg-orange-700 text-nowrap transition-colors text-white text-sm py-2 px-5 rounded-sm"
-      >
-        PROCEED TO CHECKOUT
-      </Link>
+      <CartTotalCard total={total} />
+      <PayButton total={total} />
     </div>
   );
 }
