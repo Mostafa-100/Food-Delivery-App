@@ -1,4 +1,4 @@
-import HeroSection from "../../components/HeroSection";
+import HeroSection from "../../components/hero-section/HeroSection";
 import MenuSection from "../../components/menuSection/MenuSection";
 import Footer from "../../components/Footer";
 import TopDishesSection from "../../components/topDishesSection/TopDishesSection";
