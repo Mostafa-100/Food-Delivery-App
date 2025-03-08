@@ -6,10 +6,8 @@ import { Outlet } from "react-router-dom";
 
 import AuthForm from "../../components/auth/AuthForm.tsx";
 
-import apiClient from "../../api/apiClient";
-import { useQuery } from "react-query";
-import { AxiosError } from "axios";
 import { setIsLoggedIn, setIsPageLoading } from "../../redux/auth";
+import useGetUser from "../../hooks/useGetUser.ts";
 
 function UserPagesContainer() {
   const { showLogin, showSignup } = useSelector(
@@ -18,37 +16,16 @@ function UserPagesContainer() {
 
   const dispatch = useDispatch();
 
-  useQuery(
-    ["getUserFromApp"],
-    async () => {
-      const response = await apiClient.get("/api/user", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem('token')
-        }
-      });
-      return response;
-    },
-    {
-      retry: (failureCount, error) => {
-        if (error instanceof AxiosError) {
-          return error.response?.status === 401 ? false : true;
-        }
-        return true;
-      },
-      onSuccess: () => {
-        dispatch(setIsLoggedIn(true));
-        dispatch(setIsPageLoading(false));
-      },
-      onError: (error) => {
-        // if (error instanceof AxiosError) {
-        //   if (error.response?.status !== 401) {
-        //     console.log(error);
-        //   }
-        // }
-        dispatch(setIsPageLoading(false));
-      },
-    }
-  );
+  const getUserResponse = useGetUser();
+
+  if (getUserResponse.isSuccess) {
+    dispatch(setIsLoggedIn(true));
+    dispatch(setIsPageLoading(false));
+  }
+
+  if (getUserResponse.isError) {
+    dispatch(setIsPageLoading(false));
+  }
 
   return (
     <>
