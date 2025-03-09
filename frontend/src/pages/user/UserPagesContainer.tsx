@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import Overlay from "../../components/Overlay.tsx";
 import { RootState } from "../../redux/store";
-import Navbar from "../../components/navbar/Navbar";
 import { Outlet } from "react-router-dom";
 
 import AuthForm from "../../components/auth/AuthForm.tsx";
@@ -9,6 +8,7 @@ import AuthForm from "../../components/auth/AuthForm.tsx";
 import { setIsLoggedIn, setIsPageLoading } from "../../redux/auth";
 import useGetUser from "../../hooks/useGetUser.ts";
 import { useEffect } from "react";
+import Navbar from "../../layouts/navbar/Navbar.tsx";
 
 function UserPagesContainer() {
   const { showLogin, showSignup } = useSelector(

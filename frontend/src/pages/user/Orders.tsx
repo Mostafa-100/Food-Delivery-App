@@ -1,5 +1,4 @@
-import Footer from "../../components/Footer";
-
+import Footer from "../../layouts/Footer";
 import useGetOrders from "../../hooks/useGetOrders";
 import OrdersContainer from "../../components/orders-page/OrdersContainer";
 

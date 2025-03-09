@@ -13,9 +13,8 @@ function AuthInput({ type, name, label, error }: AuthInputProps) {
         type={type}
         name={name}
         placeholder={label}
-        className={`w-full px-4 py-2 border ${
-          errorMessage ? "border-red-500" : "focus:ring-2 focus:ring-orange-500"
-        } rounded-lg focus:outline-none `}
+        className={`w-full px-4 py-2 border ${errorMessage ? "border-red-500" : "focus:ring-2 focus:ring-orange-500"
+          } rounded-lg focus:outline-none `}
       />
       {errorMessage && (
         <div className="text-sm text-red-500">{errorMessage}</div>
