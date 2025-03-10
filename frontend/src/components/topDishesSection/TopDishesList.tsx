@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { DishProps } from "../../libs/types.ts";
-import Dish from "./Dish";
+import Dish from "./dish/Dish.tsx";
 
 function TopDishesList() {
   const { dishes } = useSelector((state: RootState) => state.dish);
