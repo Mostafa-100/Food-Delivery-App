@@ -57,10 +57,11 @@ function MenuItem({ id, imgUrl, itemName }: MenuItemsProps) {
   }
 
   return (
-    <div className="cursor-pointer" onClick={onClickHandler}>
+    <div>
       <img
+        onClick={onClickHandler}
         src={imgUrl}
-        className="transition-all duration-75 size-24 object-cover rounded-full"
+        className="transition-all cursor-pointer duration-75 size-24 object-cover rounded-full"
       />
       <div className="text-sm text-center text-slate-500">{itemName}</div>
     </div>
