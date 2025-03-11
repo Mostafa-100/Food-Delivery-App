@@ -1,5 +1,5 @@
 import { AiOutlineLoading3Quarters as LoadingIcon } from "react-icons/ai";
-import OrderItem from "../../components/order/OrderItem";
+import OrderItem from "../order/order-item/OrderItem";
 
 type OrderProps = {
   id: number;
