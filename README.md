@@ -72,26 +72,31 @@ Before you begin, ensure you have the following installed:
    ```bash
    cp .env.example .env
    ```
+5. **Generate App Key**
+   - Navigate to the `backend` directory and generate app key
 
-5. **Run Migrations and Seeders**
+   ```bash
+   php artisan key:generate
+   ```
+6. **Run Migrations and Seeders**
 
-   Run the following commands to set up the database:
+   - Navigate to the `backend` directory and Run the following commands to set up the database:
 
    ```bash
    php artisan migrate --seed
    ```
 
-6. **Start the Backend Server**
+7. **Start the Backend Server**
 
-   Start the Laravel development server:
+   Navigate back to the `frontend` directory and Start the Laravel development server:
 
    ```bash
    php artisan serve
    ```
 
-7. **Start the Frontend Development Server**
+8. **Start the Frontend Development Server**
 
-   Navigate back to the `frontend` directory and start the Vite development server:
+   Navigate to the `frontend` directory and start the Vite development server:
 
    ```bash
    npm run dev
