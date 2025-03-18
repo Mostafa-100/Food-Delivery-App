@@ -6,7 +6,8 @@ type AuthInputProps = {
 };
 
 function AuthInput({ type, name, label, error }: AuthInputProps) {
-  const errorMessage = Array.isArray(error) ? error[0] : null;
+  const errorMessage = error && error.length > 0 ? error[0] : null;
+
   return (
     <div>
       <input

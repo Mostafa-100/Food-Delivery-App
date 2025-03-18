@@ -27,7 +27,8 @@ function SignupFormulaire() {
       <div className="space-y-4">
         {
           inputs.map((input) => {
-            return <AuthInput key={input.name} {...input} error={mutation.error?.response?.data?.errors?.name} />
+            const error = mutation.error?.response?.data?.errors?.[input.name];
+            return <AuthInput key={input.name} {...input} error={error} />;
           })
         }
         <SubmitButton
