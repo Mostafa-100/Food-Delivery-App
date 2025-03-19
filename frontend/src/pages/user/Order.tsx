@@ -9,10 +9,9 @@ import useGetCartTotalState from "../../hooks/useGetCartTotalState";
 function Order() {
 
   const total = useGetCartTotalState();
-
-  if (!total) <Navigate to="/" />;
-
   const mutation = usePostOrder();
+
+  if (!total) return <Navigate to="/" />
 
   if (mutation.isSuccess) {
     window.location.href = mutation.data.url;
