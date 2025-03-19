@@ -13,7 +13,7 @@ const inputs = [
 
 function SignupFormulaire() {
 
-  const mutation = useRegisterUser();
+  const { mutation, errors } = useRegisterUser();
   const showLoginForm = useShowLoginForm();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -27,8 +27,7 @@ function SignupFormulaire() {
       <div className="space-y-4">
         {
           inputs.map((input) => {
-            const error = mutation.error?.response?.data?.errors?.[input.name];
-            return <AuthInput key={input.name} {...input} error={error} />;
+            return <AuthInput key={input.name} {...input} error={errors[input.name]} />;
           })
         }
         <SubmitButton

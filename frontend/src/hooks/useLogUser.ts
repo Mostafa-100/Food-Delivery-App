@@ -17,6 +17,9 @@ function useLogUser() {
       dispatch(setIsLoggedIn(true));
       dispatch(setShowLogin(false));
       dispatch(setShowSignup(false));
+
+      setErrors([]);
+      setUserNotExistError([]);
     },
     onError: (error) => {
       if (error?.response.status == 422) {
