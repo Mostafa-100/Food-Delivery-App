@@ -21,6 +21,7 @@ class Order extends Model
     'montant',
     'numberOfItems',
     'checkout_session_id',
+    'status',
   ];
 
   public function user()
